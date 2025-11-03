@@ -14,25 +14,20 @@
   tasks:
     - name: Create or Update Configuration Item in cmdb_ci_server
       servicenow.itsm.configuration_item:
-        
-        # --- CI Identification ---
-        state: present                          # Ensures the CI exists
-        sys_class_name: 'cmdb_ci_server'        # Specifies the CMDB table (Server class)
-        
-        # --- Core Attributes ---
-        name: "{{ new_ci_name }}"               # The name of the CI (usually FQDN)
-        ip_address: "{{ new_ci_ip }}"           # Primary IP address
-        
-        # --- Linux/Red Hat Specific Attributes ---
-        os: 'Linux'                             # Operating System
-        os_version: 'Red Hat Enterprise Linux 9' # Specific OS version
-        
-        # --- Other Example Attributes (Optional) ---
-        install_status: 1                       # 1 = Installed
-        manufacturer: 'Red Hat'                 # Manufacturer
-        model_id: 'Virtual Machine'             # Model type
-        # other:                                # Use 'other' for fields not exposed as top-level parameters
-        #   assignment_group: 'Linux Team'
+        state: present
+        sys_class_name: 'cmdb_ci_server'
+        name: "{{ new_ci_name }}"
+        ip_address: "{{ new_ci_ip }}"
+        install_status: 1                                 # 1 = Installed
+
+        # --- Unsupported fields moved to the 'other' parameter ---
+        # The keys here must match the backend field names in the 'cmdb_ci_server' table.
+        other:
+          # Device/OS Details (Common field names in cmdb_ci_server)
+          manufacturer: 'Red Hat'
+          model_id: 'Virtual Machine'                     # Use 'Virtual Machine' or a specific model sys_id
+          os: 'Linux Red Hat'
+          os_version: 'Red Hat Enterprise Linux 9'
       
       register: new_ci
       
